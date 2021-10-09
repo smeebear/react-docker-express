@@ -1,25 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  interface User {
+    id: number,
+    name: string,
+    username: string,
+    email: string,
+    address: {
+      street: string,
+      suite: string,
+      city: string,
+      zipcode: string,
+      geo: {
+        lat: number,
+        lng: number
+      },
+      phone: string,
+      website: string,
+      company: {
+        name: string,
+        catchPhrase: string,
+        bs: string
+      }
+    }
+  }
+
+
+  const [users, setUsers] = useState<User[]>([])
+  useEffect(() => {
+    axios.get(`/users.json`).then((res) => {
+      setUsers(res.data);
+    })
+  })
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <div>
+        <ul className="users">
+          {users.map((user) => (
+            <li className="user">
+              <p>
+                <strong>Name:</strong> {user.name}
+              </p>
+              <p>
+                <strong>Email:</strong> {user.email}
+              </p>
+              <p>
+                <strong>City:</strong> {user.address.city}
+              </p>
+            </li>
+          ))}
+        </ul>
+      </div>
   );
 }
 
